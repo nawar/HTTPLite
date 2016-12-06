@@ -11,6 +11,7 @@
 		441B57E71DF4A24A00EBAC7B /* HTTPLiteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441B57E61DF4A24A00EBAC7B /* HTTPLiteTests.swift */; };
 		441B57E91DF4A24A00EBAC7B /* HTTPLite.h in Headers */ = {isa = PBXBuildFile; fileRef = 441B57DB1DF4A24900EBAC7B /* HTTPLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		441B57F11DF4A91D00EBAC7B /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441B57F01DF4A91D00EBAC7B /* Session.swift */; };
+		441B57F51DF4CBFE00EBAC7B /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441B57F41DF4CBFE00EBAC7B /* Request.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		441B57E61DF4A24A00EBAC7B /* HTTPLiteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPLiteTests.swift; sourceTree = "<group>"; };
 		441B57E81DF4A24A00EBAC7B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		441B57F01DF4A91D00EBAC7B /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		441B57F41DF4CBFE00EBAC7B /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 				441B57DB1DF4A24900EBAC7B /* HTTPLite.h */,
 				441B57DC1DF4A24900EBAC7B /* Info.plist */,
 				441B57F01DF4A91D00EBAC7B /* Session.swift */,
+				441B57F41DF4CBFE00EBAC7B /* Request.swift */,
 			);
 			path = HTTPLite;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				441B57F11DF4A91D00EBAC7B /* Session.swift in Sources */,
+				441B57F51DF4CBFE00EBAC7B /* Request.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +489,7 @@
 				441B57EC1DF4A24A00EBAC7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		441B57ED1DF4A24A00EBAC7B /* Build configuration list for PBXNativeTarget "HTTPLiteTests" */ = {
 			isa = XCConfigurationList;
@@ -493,6 +498,7 @@
 				441B57EF1DF4A24A00EBAC7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
