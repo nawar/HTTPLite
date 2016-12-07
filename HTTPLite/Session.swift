@@ -45,8 +45,6 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
         case NotFound = 404
     }
     
-   // var tasksHash: [taskId:TaskClosures] = [:]
-
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     didCompleteWithError error: Error?) {
@@ -123,7 +121,7 @@ open class Session {
     static let sharedInstance = Session()
 
     /**
-        Session Type
+        ## Session Type
         - Default
         - Ephemeral
         - Background
@@ -148,11 +146,18 @@ open class Session {
     let configuration: URLSessionConfiguration
     let current: URLSession
     
+    /**
+     ## Task Hash
+        This is a simple dictionary that'll keep track of
+        the queued tasks and retrieve them later to assign
+        the `success`, `failure` and `progress` completion handlers
+        to them respectively
+     */
     var taskHash:[taskId:handlers] = [:]
     
     /**
-        init: Takes a Session Type argument
-        
+        ## init
+        Takes a Session Type argument
         - Parameter type: SessionType
     */
     
