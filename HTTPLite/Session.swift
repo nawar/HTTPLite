@@ -10,23 +10,22 @@ import Foundation
 
 let errorPrefix = "HTTPLite:Error - "
 
+/**
+ Tasks internal handlers
+ - Success: a handler that handles successful responses
+ - Error: a handler that handles failures
+ - Progress: a handler that inform us about a download's progress
+ */
+typealias successClosure = (URL) -> ()
+typealias failureClosure = (Error) -> ()
+typealias progressClosure = (Int64) -> ()
+
+typealias handlers = (success:successClosure,failure:failureClosure, progress: progressClosure)
+
 // MARK: - SessionDelegate
 
 fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
 
-    /**
-        Tasks internal handlers
-        - Success: a handler that handles successful responses
-        - Error: a handler that handles failures
-        - Progress: a handler that inform us about a download's progress
-    */
-    typealias successHandler = (() -> Void)
-    typealias errorHandler = (() -> Void)
-    typealias progressHandler = (() -> Void)
-    
-    typealias taskId = Int
-
-    
     /**
         HTTP Status codes for responses
         - 2xx Success
@@ -46,14 +45,23 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
         case NotFound = 404
     }
     
-    var tasksHash: [taskId:URLSessionTask] = [:]
+   // var tasksHash: [taskId:TaskClosures] = [:]
 
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     didCompleteWithError error: Error?) {
         
-        print("completed: error: \(error)")
+        print(errorPrefix + "completed: \(error)")
         
+        let sharedSession = Session()
+        let handlers = sharedSession.taskHash[task.taskIdentifier]
+        
+        if let err = error {
+            handlers?.failure(err)
+        } else {
+            print(errorPrefix + "missing error info")
+        }
+      
     }
     
     /**
@@ -67,22 +75,21 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
                     didFinishDownloadingTo location: URL) {
         
         guard let response = downloadTask.response as? HTTPURLResponse else {
-            print("issue in converting the response to HTTPURLResponse")
+            print(errorPrefix + "issue in converting the response to HTTPURLResponse")
             return
         }
         
         let success = StatusCode.OK.rawValue
         
         guard response.statusCode == success else {
-            print("\(errorPrefix) - code: \(response.statusCode)")
+            print(errorPrefix + " - code: \(response.statusCode)")
             return
         }
         
-        guard let tempFile = try? Data(contentsOf: location) else {
-            print(errorPrefix + "reading temporary file")
-            return
-        }
+        let sharedSession = Session()
+        let handlers = sharedSession.taskHash[downloadTask.taskIdentifier]
         
+        handlers?.success(location)
         
     }
     
@@ -93,8 +100,13 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
                     totalBytesWritten written: Int64,
                     totalBytesExpectedToWrite expected: Int64) {
         
-        print("downloaded \(100 * written / expected)%")
+        let progress = 100 * written / expected
+        print("downloaded \(progress)%")
         
+        let sharedSession = Session()
+        let handlers = sharedSession.taskHash[downloadTask.taskIdentifier]
+        
+        handlers?.progress(progress)
     }
 
 
@@ -107,9 +119,10 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
 
 open class Session {
     
+    typealias taskId = Int
     static let sharedInstance = Session()
-    
-    /** 
+
+    /**
         Session Type
         - Default
         - Ephemeral
@@ -134,6 +147,8 @@ open class Session {
     // Sessions's related
     let configuration: URLSessionConfiguration
     let current: URLSession
+    
+    var taskHash:[taskId:handlers] = [:]
     
     /**
         init: Takes a Session Type argument

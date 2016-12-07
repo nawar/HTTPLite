@@ -10,9 +10,6 @@ import Foundation
 
 open class Request {
     
-    /// Request class which represent a data task
-    let current: URLSession
-    
     /**
     Request types
     - POST: post requests
@@ -23,8 +20,12 @@ open class Request {
         case GET
     }
     
-    init(url: URL) {
-        current = Session.sharedInstance.current
+    let url: URL
+    var task: URLSessionTask!
+    
+    init?(Url: String) {
+        guard let link = URL(string: Url) else { return nil }
+        url = link
     }
     
     /*
@@ -33,9 +34,35 @@ open class Request {
     }
     */
     
-    public func post(url: URL) {
+    func POST(success: @escaping successClosure,
+              failure: @escaping failureClosure,
+              progress: @escaping progressClosure) {
+        
+        
+        let session = Session.sharedInstance
+        task = session.current.dataTask(with: url)
+        let handlers = (success: success, failure: failure, progress: progress)
+        session.taskHash[task.taskIdentifier] = handlers
         
     }
     
+    fileprivate func start() {
+        task?.resume()
+    }
     
+    deinit {
+        task = nil
+    }
 }
+
+
+/*
+let requ = Request(Url: "")?.POST(success: { (<#URL#>) in
+    <#code#>
+}, failure: { (<#Error#>) in
+    <#code#>
+}, progress: { (<#Int#>) in
+    <#code#>
+})
+
+*/
