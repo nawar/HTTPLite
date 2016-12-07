@@ -11,6 +11,8 @@ import XCTest
 
 class HTTPLiteTests: XCTestCase {
     
+    let waitTimeout: TimeInterval = 60
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,9 +23,36 @@ class HTTPLiteTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testRequest() {
+        
+        let expectation = self.expectation(description: "HTTPLite-Request")
+        
+        guard let request = Request(Url: "https://www.google.com") else {
+            XCTFail("Can't intialize the request")
+            return
+        }
+        
+        request.POST(success: { url in
+            
+            print("success to url:\(url)")
+            expectation.fulfill()
+        
+        }, failure: { error in
+
+            print("error happend in filure closure")
+            XCTFail("error: \(error.localizedDescription)")
+
+        }, progress: { progress in
+            
+            if progress > 0 {
+                print("progress: \(progress)")
+                expectation.fulfill()
+            }
+        })
+        
+        waitForExpectations(timeout: waitTimeout) { error in
+            print("timedout after \(self.waitTimeout) with error:\(error?.localizedDescription)")
+        }
     }
     
     func testPerformanceExample() {

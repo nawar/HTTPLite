@@ -16,7 +16,7 @@ let errorPrefix = "HTTPLite:Error - "
  - Error: a handler that handles failures
  - Progress: a handler that inform us about a download's progress
  */
-typealias successClosure = (URL) -> ()
+typealias successClosure = (URL?) -> ()
 typealias failureClosure = (Error) -> ()
 typealias progressClosure = (Int64) -> ()
 
@@ -49,17 +49,16 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
                     task: URLSessionTask,
                     didCompleteWithError error: Error?) {
         
-        print(errorPrefix + "completed: \(error)")
+        let session = Session.sharedInstance
+        let handlers = session.taskHash[task.taskIdentifier]
         
-        let sharedSession = Session()
-        let handlers = sharedSession.taskHash[task.taskIdentifier]
-        
-        if let err = error {
-            handlers?.failure(err)
-        } else {
-            print(errorPrefix + "missing error info")
+        switch error {
+        case .some:
+            handlers?.failure(error!)
+        case .none:
+            handlers?.success(nil)
         }
-      
+       
     }
     
     /**
@@ -84,7 +83,7 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
             return
         }
         
-        let sharedSession = Session()
+        let sharedSession = Session.sharedInstance
         let handlers = sharedSession.taskHash[downloadTask.taskIdentifier]
         
         handlers?.success(location)
@@ -101,7 +100,7 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
         let progress = 100 * written / expected
         print("downloaded \(progress)%")
         
-        let sharedSession = Session()
+        let sharedSession = Session.sharedInstance
         let handlers = sharedSession.taskHash[downloadTask.taskIdentifier]
         
         handlers?.progress(progress)

@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class Request {
+class Request {
     
     /**
     Request types
@@ -44,10 +44,17 @@ open class Request {
         let handlers = (success: success, failure: failure, progress: progress)
         session.taskHash[task.taskIdentifier] = handlers
         
+        // start the task
+        start()
+        
     }
     
-    fileprivate func start() {
+    private func start() {
         task?.resume()
+    }
+    
+    func stop() {
+        task?.cancel()
     }
     
     deinit {
