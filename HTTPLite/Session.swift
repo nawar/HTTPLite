@@ -45,6 +45,11 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
         case NotFound = 404
     }
     
+    /**
+        ## Tasks Delegates
+     */
+    
+    
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     didCompleteWithError error: Error?) {
@@ -61,8 +66,9 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
        
     }
     
+    
     /**
-     Download Task Delegates
+        ## Download Task Delegates
      
      */
  

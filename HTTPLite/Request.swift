@@ -10,17 +10,8 @@ import Foundation
 
 class Request {
     
-    /**
-    Request types
-    - POST: post requests
-    - GET: get requests
-    */
-    enum `Type` {
-        case POST
-        case GET
-    }
-    
     let url: URL
+    var this: URLRequest!
     var task: URLSessionTask!
     
     init?(Url: String) {
@@ -28,25 +19,54 @@ class Request {
         url = link
     }
     
-    /*
-    public func start() {
-        task.resume()
+    /**
+        ## Request types
+        - POST: post requests
+        - GET: get requests
+     */
+    enum `Type`: String {
+        case POST = "POST"
+        case GET = "GET"
     }
+    
+    /**
+        ## HTTP methods wrapper
+        supply the method type
+        - Parameter type: Type
     */
+    
+    func method(type:Type) {
+        
+        // fill up the headers
+        switch type {
+        case .POST:
+            this.setValue("application/x-www-form-urlencoded", forHTTPHeaderField:"Content-Type") // for simple form data
+            //request.setValue("application/form-data" forHTTPHeaderField:"Content-Type") //binary form data
+        default: break
+        
+        }
+        
+        this = URLRequest(url: url)
+        this.httpMethod = type.rawValue
+        // more to come
+        
+    }
     
     func POST(success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
         
-        
+        // setup the right method
+        method(type: .POST)
+        // pull the shared session
         let session = Session.sharedInstance
-        task = session.current.dataTask(with: url)
+        task = session.current.dataTask(with: this)
+        // initiate the request handlers
         let handlers = (success: success, failure: failure, progress: progress)
+        // add the task to the hash table
         session.taskHash[task.taskIdentifier] = handlers
-        
         // start the task
         start()
-        
     }
     
     private func start() {
