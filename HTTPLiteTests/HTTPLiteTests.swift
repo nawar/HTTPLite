@@ -32,16 +32,23 @@ class HTTPLiteTests: XCTestCase {
             return
         }
         
-        request.POST(success: { url in
-            
-            print("success to url:\(url)")
-            expectation.fulfill()
+        let params: [String: Any] = [:]
         
+        request.POST(parameters: params, success: { response, url in
+            
+            if let urlReponse = url {
+                print("success to url:\(urlReponse)")
+            }
+           
+            print("response data:\(response)")
+            
+            expectation.fulfill()
+            
         }, failure: { error in
-
+            
             print("error happend in filure closure")
             XCTFail("error: \(error.localizedDescription)")
-
+            
         }, progress: { progress in
             
             if progress > 0 {

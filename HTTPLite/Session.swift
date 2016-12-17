@@ -16,7 +16,7 @@ let errorPrefix = "HTTPLite:Error - "
  - Error: a handler that handles failures
  - Progress: a handler that inform us about a download's progress
  */
-typealias successClosure = (URL?) -> ()
+typealias successClosure = (HTTPURLResponse,URL?) -> ()
 typealias failureClosure = (Error) -> ()
 typealias progressClosure = (Int64) -> ()
 
@@ -45,11 +45,8 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
         case NotFound = 404
     }
     
-    /**
-        ## Tasks Delegates
-     */
     
-    
+    // MARK: - Tasks Delegates
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     didCompleteWithError error: Error?) {
@@ -61,17 +58,16 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
         case .some:
             handlers?.failure(error!)
         case .none:
-            handlers?.success(nil)
+            if let response = task.response as? HTTPURLResponse {
+                handlers?.success(response, nil)
+            }
         }
        
     }
     
     
-    /**
-        ## Download Task Delegates
-     
-     */
- 
+    // MARK: - Download Task Delegates
+    
     /// File Download
     func urlSession(_ session: URLSession,
                     downloadTask: URLSessionDownloadTask,
@@ -92,7 +88,9 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
         let sharedSession = Session.sharedInstance
         let handlers = sharedSession.taskHash[downloadTask.taskIdentifier]
         
-        handlers?.success(location)
+        if let response = downloadTask.response as? HTTPURLResponse {
+            handlers?.success(response, location)
+        }
         
     }
     

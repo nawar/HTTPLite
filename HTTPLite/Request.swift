@@ -37,22 +37,35 @@ class Request {
     
     func method(type:Type) {
         
+        this = URLRequest(url: url)
+        
         // fill up the headers
         switch type {
         case .POST:
-            this.setValue("application/x-www-form-urlencoded", forHTTPHeaderField:"Content-Type") // for simple form data
+            this.setValue("application/x-www-form-urlencoded",
+                          forHTTPHeaderField:"Content-Type") // for simple form data
             //request.setValue("application/form-data" forHTTPHeaderField:"Content-Type") //binary form data
         default: break
         
         }
-        
-        this = URLRequest(url: url)
+
         this.httpMethod = type.rawValue
+
         // more to come
         
     }
     
-    func POST(success: @escaping successClosure,
+    /**
+        ## POST
+        Sends post request
+        - parameters:
+            - parameters: the paraemters in the POST request body
+            - success: success handler
+            - failure: failure handler
+            - progress: progress handler
+    */
+    func POST(parameters:[String:Any],isJSON: Bool = true,
+            success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
         
@@ -82,14 +95,3 @@ class Request {
     }
 }
 
-
-/*
-let requ = Request(Url: "")?.POST(success: { (<#URL#>) in
-    <#code#>
-}, failure: { (<#Error#>) in
-    <#code#>
-}, progress: { (<#Int#>) in
-    <#code#>
-})
-
-*/
