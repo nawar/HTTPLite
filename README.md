@@ -1,5 +1,8 @@
 # HTTPLite
-A quick Swift 3.x wrapper for URLSession
+A simple Swift 3.x wrapper for URLSession
+
+
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
 
 
 ## Usuage 
