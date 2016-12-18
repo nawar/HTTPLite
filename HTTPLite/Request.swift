@@ -111,7 +111,7 @@ class Request {
             // Setup HTTP Body
             if let params = parameters {
                 
-                if let paramsString = serializer(parameters: params, type: .POST),
+                if let paramsString = serializer(parameters: params),
                     let paramsData = paramsString.data(using: .utf8) {
                     request.httpBody = paramsData
                 }
@@ -122,9 +122,9 @@ class Request {
             // If there are parameters, build the query part of the URL then 
             // assign it back
             if let params = parameters,
-            let paramsString = serializer(parameters: params, type: .GET),
+            let paramsString = serializer(parameters: params),
                 let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true) {
-                components.percentEncodedQuery = paramsString
+                components.query = paramsString
                 request.url = components.url!
             }
         
@@ -141,7 +141,7 @@ class Request {
      - Parameter parameters: the parameters to serializer
      */
     
-    func serializer(parameters: [String:String], type: Type) -> String? {
+    func serializer(parameters: [String:String]) -> String? {
         
         guard !parameters.isEmpty else {
             return nil
@@ -157,14 +157,10 @@ class Request {
             }
             
             if !queryItems.isEmpty {
+            
                 urlComponents.queryItems = queryItems
-                
-                switch type {
-                case .GET:
-                    return urlComponents.percentEncodedQuery
-                case .POST:
-                    return urlComponents.query
-                }
+                return urlComponents.query
+        
             }
             
         }
