@@ -32,7 +32,7 @@ class HTTPLiteTests: XCTestCase {
             return
         }
         
-        let params: [String: String] = ["rasputin":String(describing:666)]
+        let params: [String: String] = ["rasputin":String(describing:555)]
         
         request.POST(parameters: params, success: { response, url in
             

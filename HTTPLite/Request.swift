@@ -39,22 +39,16 @@ class Request {
         - Parameter parameters: the parameters to build
     */
     
-    func builder(parameters: [String:String]) -> String {
+    func serializer(parameters: [String:String]) -> String {
         
-        var count = parameters.count
-        var paramsString: String = ""
+        var paramsSerializer: [String] = []
         
         for (key,value) in parameters {
-            
-            paramsString += key + "=" + value
-            count -= 1
-            if count > 0 {
-                paramsString += "&"
-            }
-            
+            paramsSerializer.append(key + "=" + value)
         }
         
-        return paramsString
+        return  paramsSerializer.joined(separator: "&")
+
     }
     
     /**
@@ -85,7 +79,7 @@ class Request {
         
         if let params = parameters {
             
-            paramsString = builder(parameters: params)
+            paramsString = serializer(parameters: params)
             
             if let paramsData = paramsString.data(using: .utf8), !paramsString.isEmpty {
                 paramsBodyLength = paramsData.count
