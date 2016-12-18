@@ -7,7 +7,7 @@ A simple Swift 3.x wrapper for URLSession
 
 ## Usuage 
 
-To use the wrapper a simple declration for the `Request` object suffices, followed by the type of the request that we are intendeing to send.
+To use the wrapper, a simple declration of a `Request` object suffices, with the recipent URL.
 
 ```swift
 guard let request = Request(Url: "https://www.google.com") else {
@@ -16,28 +16,60 @@ guard let request = Request(Url: "https://www.google.com") else {
 }
 ```
 
-Then we can peform any HTTP verb:
+After that, we can peform any HTTP verb.
 
-### POST
+### GET
 
 ```swift
 
-let params: [String: String] = [:]
-request.POST(parameters: params, success: { response, url in
+let params: [String: String] = ["album":"Michael Jackson - Thriller"]
+
+request.GET(parameters: params, success: { response, url in
 
     if let urlReponse = url {
-        print("success to url:\(urlReponse)")
+        print("success with url:\(urlReponse)")
     }
 
     print("response data:\(response)")
 
 }, failure: { error in
 
-    print("error happend in filure closure")
+    print("error happend in failure closure")
 
 }, progress: { progress in
 
-    print("progress:\(progress)")
+    if progress > 0 {
+        print("progress: \(progress)")
+    }
 
 })
+
+```
+
+### POST
+```swift
+
+let params: [String: String] = ["healer":"Grigori Yefimovich Rasputin", "powers": "healer and adviser"]
+
+request.POST(parameters: params, success: { response, url in
+
+    if let urlReponse = url {
+        print("success with url:\(urlReponse)")
+    }
+
+    print("response data:\(response)")
+
+}, failure: { error in
+
+    print("error happend in failure closure")
+    XCTFail("error: \(error.localizedDescription)")
+
+}, progress: { progress in
+
+    if progress > 0 {
+        print("progress: \(progress)")
+    }
+
+})
+
 ```

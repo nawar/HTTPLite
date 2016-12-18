@@ -15,7 +15,7 @@ import Foundation
 */
 class Request {
     
-    let url: URL
+    var url: URL
     var request: URLRequest!
     var task: URLSessionTask!
     
@@ -34,78 +34,19 @@ class Request {
         case GET = "GET"
     }
     
-    /**
-        ### Parameters builder
-        - Parameter parameters: the parameters to build
-    */
     
-    func serializer(parameters: [String:String]) -> String {
-        
-        var paramsSerializer: [String] = []
-        
-        for (key,value) in parameters {
-            paramsSerializer.append(key + "=" + value)
-        }
-        
-        return  paramsSerializer.joined(separator: "&")
-
-    }
-    
-    /**
-        ## HTTP methods wrapper
-        supply the method type
-        Parameters :
-          - type: Type
-          - parameters: parameters for the method
-    */
-    
-    func method(type:Type, parameters: [String:String]? ) {
-        
-        request = URLRequest(url: url)
-        
-        // fill up the headers
-        switch type {
-        case .POST:
-            request.setValue("application/x-www-form-urlencoded",
-                          forHTTPHeaderField:"Content-Type") // for simple form data
-            //request.setValue("application/form-data" forHTTPHeaderField:"Content-Type") //binary form data
-        default: break
-        
-        }
-
-        // Setup HTTP Body
-        var paramsString = ""
-        var paramsBodyLength = 0
-        
-        if let params = parameters {
-            
-            paramsString = serializer(parameters: params)
-            
-            if let paramsData = paramsString.data(using: .utf8), !paramsString.isEmpty {
-                paramsBodyLength = paramsData.count
-                request.httpBody = paramsData
-            }
-            
-        }
-
-        // Setup Content-Length header
-        let contentLength = String(paramsBodyLength)
-        request.setValue(contentLength, forHTTPHeaderField:"Content-Length")
-        
-        request.httpMethod = type.rawValue
-
-    }
+    // MARK: - Methods Functions
     
     /**
         ## POST
-        Sends post request
+        Sends POST request
         - parameters:
             - parameters: the paraemters in the POST request body
             - success: success handler
             - failure: failure handler
             - progress: progress handler
     */
-    func POST(parameters:[String:String], isJSON: Bool = true,
+    func POST(parameters : [String:String], isJSON : Bool = true,
             success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
@@ -123,15 +64,126 @@ class Request {
         start()
     }
     
+    /**
+     ## GET
+     Sends GET request
+     - parameters:
+     - parameters: the paraemters in the GET request body
+     - success: success handler
+     - failure: failure handler
+     - progress: progress handler
+     */
+    func GET(parameters : [String:String], isJSON : Bool = true,
+              success: @escaping successClosure,
+              failure: @escaping failureClosure,
+              progress: @escaping progressClosure) {
+        
+        // setup the right method
+        method(type: .GET, parameters: parameters)
+        // pull the shared session
+        let session = Session.sharedInstance
+        task = session.current.dataTask(with: request)
+        // initiate the request handlers
+        let handlers = (success: success, failure: failure, progress: progress)
+        // add the task to the hash table
+        session.taskHash[task.taskIdentifier] = handlers
+        // start the task
+        start()
+    }
+    
+    // MARK: - Helper Functions
+    
+    /**
+     ## HTTP methods wrapper
+     supply the method type
+     Parameters :
+        - type: Type
+        - parameters: parameters for the method
+     */
+    
+    func method(type:Type, parameters: [String:String]? ) {
+        
+        request = URLRequest(url: url)
+        
+        // fill up the headers
+        switch type {
+        case .POST:
+            // Setup HTTP Body
+            if let params = parameters {
+                
+                if let paramsString = serializer(parameters: params, type: .POST),
+                    let paramsData = paramsString.data(using: .utf8) {
+                    request.httpBody = paramsData
+                }
+            
+            }
+        case .GET:
+            
+            // If there are parameters, build the query part of the URL then 
+            // assign it back
+            if let params = parameters,
+            let paramsString = serializer(parameters: params, type: .GET),
+                let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true) {
+                components.percentEncodedQuery = paramsString
+                request.url = components.url!
+            }
+        
+        }
+        
+        // Setup http method
+        request.httpMethod = type.rawValue
+        
+        // NOTE: We skipped building Content-Length as Apple supply it by default
+    }
+    
+    /**
+     ### Parameters serializer
+     - Parameter parameters: the parameters to serializer
+     */
+    
+    func serializer(parameters: [String:String], type: Type) -> String? {
+        
+        guard !parameters.isEmpty else {
+            return nil
+        }
+        
+        var queryItems: [URLQueryItem] = []
+       
+        if let  urlComponents = NSURLComponents(url: url , resolvingAgainstBaseURL: true) {
+        
+            for (key, value) in parameters {
+                let queryItem = URLQueryItem(name: key, value: value)
+                queryItems.append(queryItem)
+            }
+            
+            if !queryItems.isEmpty {
+                urlComponents.queryItems = queryItems
+                
+                switch type {
+                case .GET:
+                    return urlComponents.percentEncodedQuery
+                case .POST:
+                    return urlComponents.query
+                }
+            }
+            
+        }
+        
+        return nil
+    }
+    
+    /// Start a task. A wrapper for resume()
     private func start() {
         task?.resume()
     }
     
+    /// Stop a task. A wrapper for cancel()
     func stop() {
         task?.cancel()
     }
     
     deinit {
+        request = nil
         task = nil
     }
 }

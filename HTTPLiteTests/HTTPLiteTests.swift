@@ -23,21 +23,59 @@ class HTTPLiteTests: XCTestCase {
         super.tearDown()
     }
     
-    func testRequest() {
+    func testGETRequest() {
         
         let expectation = self.expectation(description: "HTTPLite-Request")
         
-        guard let request = Request(Url: "http://requestb.in/1f3wbuv1") else {
+        guard let request = Request(Url: "https://requestb.in/1f3wbuv1") else {
             XCTFail("Can't intialize the request")
             return
         }
         
-        let params: [String: String] = ["rasputin":String(describing:555)]
+        let params: [String: String] = ["album":"Michael Jackson - Thriller"]
+        
+        request.GET(parameters: params, success: { response, url in
+            
+            if let urlReponse = url {
+                print("success with url:\(urlReponse)")
+            }
+            
+            print("response data:\(response)")
+            expectation.fulfill()
+            
+        }, failure: { error in
+            
+            print("error happend in failure closure")
+            XCTFail("error: \(error.localizedDescription)")
+            
+        }, progress: { progress in
+            
+            if progress > 0 {
+                print("progress: \(progress)")
+                expectation.fulfill()
+            }
+        })
+        
+        waitForExpectations(timeout: waitTimeout) { error in
+            print("timedout after \(self.waitTimeout) with error:\(error?.localizedDescription)")
+        }
+    }
+    
+    func testPOSTRequest() {
+        
+        let expectation = self.expectation(description: "HTTPLite-Request")
+        
+        guard let request = Request(Url: "https://requestb.in/1f3wbuv1") else {
+            XCTFail("Can't intialize the request")
+            return
+        }
+        
+        let params: [String: String] = ["healer":"Grigori Yefimovich Rasputin", "powers": "healer and adviser"]
         
         request.POST(parameters: params, success: { response, url in
             
             if let urlReponse = url {
-                print("success to url:\(urlReponse)")
+                print("success with url:\(urlReponse)")
             }
            
             print("response data:\(response)")
@@ -46,7 +84,7 @@ class HTTPLiteTests: XCTestCase {
             
         }, failure: { error in
             
-            print("error happend in filure closure")
+            print("error happend in failure closure")
             XCTFail("error: \(error.localizedDescription)")
             
         }, progress: { progress in
