@@ -2,8 +2,7 @@
 A simple Swift 3.x wrapper for URLSession
 
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
-
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) ![ios/osx](https://cocoapod-badges.herokuapp.com/p/AFNetworking/badge.png)
 
 ## Usuage 
 
@@ -62,7 +61,6 @@ request.POST(parameters: params, success: { response, url in
 }, failure: { error in
 
     print("error happend in failure closure")
-    XCTFail("error: \(error.localizedDescription)")
 
 }, progress: { progress in
 
