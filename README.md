@@ -2,9 +2,7 @@
 A simple Swift 3.x wrapper for URLSession
 
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
-
-![ios/osx](https://cocoapod-badges.herokuapp.com/p/AFNetworking/badge.png)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) ![ios/osx](https://cocoapod-badges.herokuapp.com/p/AFNetworking/badge.png)
 
 ## Usuage 
 
