@@ -61,7 +61,6 @@ request.POST(parameters: params, success: { response, url in
 }, failure: { error in
 
     print("error happend in failure closure")
-    XCTFail("error: \(error.localizedDescription)")
 
 }, progress: { progress in
 
