@@ -22,7 +22,7 @@ Then we can peform any HTTP verb:
 
 ```swift
 
-let params: [String: Any] = [:]
+let params: [String: String] = [:]
 request.POST(parameters: params, success: { response, url in
 
     if let urlReponse = url {

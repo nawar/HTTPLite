@@ -27,12 +27,12 @@ class HTTPLiteTests: XCTestCase {
         
         let expectation = self.expectation(description: "HTTPLite-Request")
         
-        guard let request = Request(Url: "https://www.google.com") else {
+        guard let request = Request(Url: "http://requestb.in/1f3wbuv1") else {
             XCTFail("Can't intialize the request")
             return
         }
         
-        let params: [String: Any] = [:]
+        let params: [String: String] = ["rasputin":String(describing:666)]
         
         request.POST(parameters: params, success: { response, url in
             

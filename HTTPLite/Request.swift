@@ -8,10 +8,15 @@
 
 import Foundation
 
+/**
+ # Request 
+ A class encapsulates the most important part of request:
+    @param url
+*/
 class Request {
     
     let url: URL
-    var this: URLRequest!
+    var request: URLRequest!
     var task: URLSessionTask!
     
     init?(Url: String) {
@@ -30,29 +35,71 @@ class Request {
     }
     
     /**
-        ## HTTP methods wrapper
-        supply the method type
-        - Parameter type: Type
+        ### Parameters builder
+        - Parameter parameters: the parameters to build
     */
     
-    func method(type:Type) {
+    func builder(parameters: [String:String]) -> String {
         
-        this = URLRequest(url: url)
+        var count = parameters.count
+        var paramsString: String = ""
+        
+        for (key,value) in parameters {
+            
+            paramsString += key + "=" + value
+            count -= 1
+            if count > 0 {
+                paramsString += "&"
+            }
+            
+        }
+        
+        return paramsString
+    }
+    
+    /**
+        ## HTTP methods wrapper
+        supply the method type
+        Parameters :
+          - type: Type
+          - parameters: parameters for the method
+    */
+    
+    func method(type:Type, parameters: [String:String]? ) {
+        
+        request = URLRequest(url: url)
         
         // fill up the headers
         switch type {
         case .POST:
-            this.setValue("application/x-www-form-urlencoded",
+            request.setValue("application/x-www-form-urlencoded",
                           forHTTPHeaderField:"Content-Type") // for simple form data
             //request.setValue("application/form-data" forHTTPHeaderField:"Content-Type") //binary form data
         default: break
         
         }
 
-        this.httpMethod = type.rawValue
-
-        // more to come
+        // Setup HTTP Body
+        var paramsString = ""
+        var paramsBodyLength = 0
         
+        if let params = parameters {
+            
+            paramsString = builder(parameters: params)
+            
+            if let paramsData = paramsString.data(using: .utf8), !paramsString.isEmpty {
+                paramsBodyLength = paramsData.count
+                request.httpBody = paramsData
+            }
+            
+        }
+
+        // Setup Content-Length header
+        let contentLength = String(paramsBodyLength)
+        request.setValue(contentLength, forHTTPHeaderField:"Content-Length")
+        
+        request.httpMethod = type.rawValue
+
     }
     
     /**
@@ -64,16 +111,16 @@ class Request {
             - failure: failure handler
             - progress: progress handler
     */
-    func POST(parameters:[String:Any],isJSON: Bool = true,
+    func POST(parameters:[String:String], isJSON: Bool = true,
             success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
         
         // setup the right method
-        method(type: .POST)
+        method(type: .POST, parameters: parameters)
         // pull the shared session
         let session = Session.sharedInstance
-        task = session.current.dataTask(with: this)
+        task = session.current.dataTask(with: request)
         // initiate the request handlers
         let handlers = (success: success, failure: failure, progress: progress)
         // add the task to the hash table
