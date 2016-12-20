@@ -44,7 +44,8 @@ request.GET(parameters: params, success: { response in
 
 #### JSON handling
 
-let params: [String: String] = ["album":"Michael Jackson - Thriller"]
+```swift
+let params: [String: String] = ["album": "Michael Jackson - Thriller"]
 
 request.GET(parameters: params, success: { response in
 
@@ -65,7 +66,7 @@ if let url = response.url { }
 }) { progress in
 
 }
-
+```
 
 ### POST
 ```swift
