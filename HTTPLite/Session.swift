@@ -16,7 +16,7 @@ let errorPrefix = "HTTPLite:Error - "
  - Error: a handler that handles failures
  - Progress: a handler that inform us about a download's progress
  */
-typealias successClosure = (HTTPURLResponse,URL?) -> ()
+typealias successClosure = (Response) -> ()
 typealias failureClosure = (Error) -> ()
 typealias progressClosure = (Int64) -> ()
 
@@ -24,7 +24,7 @@ typealias handlers = (success:successClosure,failure:failureClosure, progress: p
 
 // MARK: - SessionDelegate
 
-fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
+fileprivate class SessionDelegate: NSObject, URLSessionDataDelegate, URLSessionDownloadDelegate {
 
     /**
         HTTP Status codes for responses
@@ -46,25 +46,48 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
     }
     
     
-    // MARK: - Tasks Delegates
+    // MARK: - Data Tasks Delegates
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     didCompleteWithError error: Error?) {
         
+        let taskId = task.taskIdentifier
         let session = Session.sharedInstance
-        let handlers = session.taskHash[task.taskIdentifier]
+        let handlers = session.taskHash[taskId]
         
         switch error {
         case .some:
+            
             handlers?.failure(error!)
+        
         case .none:
-            if let response = task.response as? HTTPURLResponse {
-                handlers?.success(response, nil)
+            
+            if let httpResponse = task.response as? HTTPURLResponse {
+                
+                let dataForTask = session.taskDataStorage[taskId]! as Data
+                let response = Response(response: httpResponse, data: dataForTask)
+                handlers?.success(response)
+            
             }
+            
         }
        
+        // do the final clean up
+        session.taskHash.removeValue(forKey: taskId)
+        session.taskDataStorage.removeValue(forKey: taskId)
+        
     }
     
+    fileprivate func urlSession(_ session: URLSession,
+                                dataTask: URLSessionDataTask,
+                                didReceive data: Data) {
+        
+        let taskId = dataTask.taskIdentifier
+        let session = Session.sharedInstance
+        
+        session.taskDataStorage[taskId]?.append(data)
+
+    }
     
     // MARK: - Download Task Delegates
     
@@ -73,24 +96,36 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
                     downloadTask: URLSessionDownloadTask,
                     didFinishDownloadingTo location: URL) {
         
-        guard let response = downloadTask.response as? HTTPURLResponse else {
+        guard let httpResponse = downloadTask.response as? HTTPURLResponse else {
             print(errorPrefix + "issue in converting the response to HTTPURLResponse")
             return
         }
+       
+        let taskId = downloadTask.taskIdentifier
+        let session = Session.sharedInstance
+        let handlers = session.taskHash[taskId]
         
         let success = StatusCode.OK.rawValue
         
-        guard response.statusCode == success else {
-            print(errorPrefix + " - code: \(response.statusCode)")
-            return
+        if httpResponse.statusCode == success {
+            
+            let response = Response(response: httpResponse,
+                                    data: nil,
+                                    url: location)
+            handlers?.success(response)
+        
+        } else {
+
+            let error = NSError(domain: NSURLErrorDomain,
+                                code: NSURLErrorUnknown,
+                                userInfo: ["statusCode" : httpResponse.statusCode])
+            handlers?.failure(error)
+    
         }
         
-        let sharedSession = Session.sharedInstance
-        let handlers = sharedSession.taskHash[downloadTask.taskIdentifier]
-        
-        if let response = downloadTask.response as? HTTPURLResponse {
-            handlers?.success(response, location)
-        }
+        // do the final clean up
+        session.taskHash.removeValue(forKey: downloadTask.taskIdentifier)
+        session.taskDataStorage.removeValue(forKey: downloadTask.taskIdentifier)
         
     }
     
@@ -112,9 +147,6 @@ fileprivate class SessionDelegate: NSObject, URLSessionDownloadDelegate {
 
 
 }
-
-
-
 
   // MARK: - Session
 
@@ -156,7 +188,14 @@ open class Session {
         the `success`, `failure` and `progress` completion handlers
         to them respectively
      */
-    var taskHash:[taskId:handlers] = [:]
+    var taskHash:[taskId : handlers] = [:]
+    
+    /** 
+    ## Task Data Storage
+        This is a data storage we use to gather the data
+        of each dataTask
+    */
+    var taskDataStorage:[taskId : NSMutableData] = [:]
     
     /**
         ## init

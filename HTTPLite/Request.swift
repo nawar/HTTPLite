@@ -8,11 +8,29 @@
 
 import Foundation
 
+// MARK: - Response
 /**
- # Request 
- A class encapsulates the most important part of request:
-    @param url
+ The class which holds the response data as well as the collected
+ data for the request
 */
+struct Response {
+    
+    let response: HTTPURLResponse
+    let data: Data?
+    var url: URL?
+    
+    init(response: HTTPURLResponse, data: Data? = nil, url: URL? = nil ) {
+       
+        self.response = response
+        self.data = data
+        self.url = url
+        
+    }
+    
+}
+
+// MARK: - Request
+/// A class encapsulates the most important part of request:
 class Request {
     
     var url: URL
@@ -46,7 +64,7 @@ class Request {
             - failure: failure handler
             - progress: progress handler
     */
-    func POST(parameters : [String:String], isJSON : Bool = true,
+    func POST(parameters : [String:String],
             success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
@@ -58,8 +76,13 @@ class Request {
         task = session.current.dataTask(with: request)
         // initiate the request handlers
         let handlers = (success: success, failure: failure, progress: progress)
+        
+        let taskId = task.taskIdentifier
         // add the task to the hash table
-        session.taskHash[task.taskIdentifier] = handlers
+        session.taskHash[taskId] = handlers
+        // initialize the data for the task
+        session.taskDataStorage[taskId] = NSMutableData()
+        session.taskDataStorage[taskId]?.length = 0
         // start the task
         start()
     }
@@ -85,8 +108,13 @@ class Request {
         task = session.current.dataTask(with: request)
         // initiate the request handlers
         let handlers = (success: success, failure: failure, progress: progress)
+        
+        let taskId = task.taskIdentifier
         // add the task to the hash table
-        session.taskHash[task.taskIdentifier] = handlers
+        session.taskHash[taskId] = handlers
+        // initialize the data for the task
+        session.taskDataStorage[taskId] = NSMutableData()
+        session.taskDataStorage[taskId]?.length = 0
         // start the task
         start()
     }

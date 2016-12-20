@@ -21,29 +21,51 @@ After that, we can peform any HTTP verb.
 
 ```swift
 
-let params: [String: String] = ["album":"Michael Jackson - Thriller"]
+let params: [String: String] = ["Artist": "Michael Jackson", "Album":"Thriller"]
 
-request.GET(parameters: params, success: { response, url in
 
-    if let urlReponse = url {
-        print("success with url:\(urlReponse)")
+request.GET(parameters: params, success: { response in
+
+    if let data = response.data {
     }
 
-    print("response data:\(response)")
+    if let url = response.url {
+
+    }
 
 }, failure: { error in
 
-    print("error happend in failure closure")
+}) { progress in
 
-}, progress: { progress in
+}
 
-    if progress > 0 {
-        print("progress: \(progress)")
-    }
-
-})
 
 ```
+
+#### JSON handling
+
+let params: [String: String] = ["album":"Michael Jackson - Thriller"]
+
+request.GET(parameters: params, success: { response in
+
+    if let data = response.data {
+
+    do {
+        let JSON = try JSONSerialization.jsonObject(with: data,
+        options: .mutableContainers)
+    
+        } catch let error {
+        }
+    }
+
+if let url = response.url { }
+
+}, failure: { error in
+
+}) { progress in
+
+}
+
 
 ### POST
 ```swift
@@ -71,3 +93,29 @@ request.POST(parameters: params, success: { response, url in
 })
 
 ```
+
+### Download
+
+We can download files using either `download()` or `GET`.
+
+#### Download with `GET`
+
+```swift
+
+let params: [String: String] = ["image":"Random image"]
+
+request.GET(parameters: params, success: { response in
+
+    if let data = response.data { 
+        let image = UIImage(data: data)
+    }
+
+    if let url = response.url { }
+
+}, failure: { error in
+
+}) { progress in
+
+}
+```
+
