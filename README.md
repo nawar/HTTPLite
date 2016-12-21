@@ -7,9 +7,9 @@ A simple Swift 3.x wrapper for **URLSession**
 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) ![ios/osx](https://cocoapod-badges.herokuapp.com/p/AFNetworking/badge.png)
 
-## Usuage 
+## Usage 
 
-To use the wrapper, a simple declration of a `Request` object suffices, with the recipent URL.
+To use the wrapper, a simple declaration of a `Request` object suffices, with the recipient URL.
 
 ```swift
 guard let request = Request(Url: "https://www.google.com") else {
@@ -18,7 +18,7 @@ guard let request = Request(Url: "https://www.google.com") else {
 }
 ```
 
-After that, we can peform any HTTP verb.
+After that, we can perform any HTTP verb.
 
 ### GET
 
@@ -169,3 +169,7 @@ Then, from the command line, run:
 pod install # or pod update
 ```
 Then you are good to go :+1:
+
+
+## Support
+If you encounter a problem, please open a new issue. Also, pull requests are always welcome! 
