@@ -51,14 +51,15 @@ request.get(parameters: params, success: { response in
     if let data = response.data {
 
    	do {
-       		 let JSON = try JSONSerialization.jsonObject(with: data,
-       		 options: .mutableContainers)
+
+       		let JSON = try JSONSerialization.jsonObject(with: data,
+       		options: .mutableContainers)
     	
 	} catch let error {	
-        }
-    }
 
-    if let url = response.url { }
+        }
+
+    	if let url = response.url { }
 
 }, failure: { error in
 
