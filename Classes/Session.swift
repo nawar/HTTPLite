@@ -16,9 +16,9 @@ let errorPrefix = "HTTPLite:Error - "
  - Error: a handler that handles failures
  - Progress: a handler that inform us about a download's progress
  */
-typealias successClosure = (Response) -> ()
-typealias failureClosure = (Error) -> ()
-typealias progressClosure = (Int64) -> ()
+public typealias successClosure = (Response) -> ()
+public typealias failureClosure = (Error) -> ()
+public typealias progressClosure = (Int64) -> ()
 
 typealias handlers = (success:successClosure,failure:failureClosure, progress: progressClosure)
 

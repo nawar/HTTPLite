@@ -10,7 +10,7 @@ To use the wrapper, a simple declration of a `Request` object suffices, with the
 
 ```swift
 guard let request = Request(Url: "https://www.google.com") else {
-    fatalError("Can't intialize the request")
+    print("Can't intialize the request")
     return
 }
 ```
@@ -164,3 +164,21 @@ request.download(parameters: params, success: { response in
 	print("downloaded \(progress)")
 }
 ```
+
+## Installation 
+
+### CocoaPods
+
+To install, check out Get Started tab on cocoapods.org.
+To use HTTPLite in your project add the pod below to your project's `Podfile` 
+
+```
+pod 'HTTPLite'
+```
+
+Then, from the command line, run:
+
+```
+pod install # or pod update
+```
+Then you are good to go :+1:

@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "HTTPLite"
-  s.version      = "1.0"
+  s.version      = "1.1.1"
   s.summary      = "A simple Swift 3.x wrapper for URLSession"
 
   # This description is used to generate tags and improve search results.
@@ -82,7 +82,7 @@ This library provides an easy entry to using HTTP with Swift 3. It is based on t
   #
 
   #s.source       = { :git => "https://github.com/nawar/HTTPLite.git", :tag => "v#{s.version}" }
-  s.source       = { :git => "https://github.com/nawar/HTTPLite.git", :tag => "v#{s.version}", :commit => "725ce543a01029ad66e92b44bb6dee64ea0a97e8" }
+  s.source       = { :git => "https://github.com/nawar/HTTPLite.git", :tag => "v#{s.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -94,7 +94,7 @@ This library provides an easy entry to using HTTP with Swift 3. It is based on t
   #
 
   s.source_files  = "Classes"
-  # s.exclude_files = "Classes/Exclude"
+  s.exclude_files = "Classes/*.h"
 
   # s.public_header_files = "Classes/**/*.h"
 

@@ -13,11 +13,11 @@ import Foundation
  The class which holds the response data as well as the collected
  data for the request
 */
-struct Response {
+public struct Response {
     
-    let response: HTTPURLResponse
-    let data: Data?
-    var url: URL?
+    public let response: HTTPURLResponse
+    public let data: Data?
+    public var url: URL?
     
     init(response: HTTPURLResponse, data: Data? = nil, url: URL? = nil ) {
        
@@ -31,13 +31,13 @@ struct Response {
 
 // MARK: - Request
 /// A class encapsulates the most important part of request:
-class Request {
+open class Request {
     
     var url: URL
     var request: URLRequest!
     var task: URLSessionTask!
     
-    init?(Url: String) {
+    public init?(Url: String) {
         guard let link = URL(string: Url) else { return nil }
         url = link
     }
@@ -63,7 +63,7 @@ class Request {
             - failure: failure handler
             - progress: progress handler
     */
-    func post(parameters : [String:String],
+    public func post(parameters : [String:String],
             success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
@@ -94,7 +94,7 @@ class Request {
      - failure: failure handler
      - progress: progress handler
      */
-    func get(parameters : [String:String],
+    public func get(parameters : [String:String],
               success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
@@ -126,7 +126,7 @@ class Request {
      - failure: failure handler
      - progress: progress handler
      */
-    func download(parameters : [String:String],
+    public func download(parameters : [String:String],
              success: @escaping successClosure,
              failure: @escaping failureClosure,
              progress: @escaping progressClosure) {
@@ -239,4 +239,3 @@ class Request {
         task = nil
     }
 }
-
