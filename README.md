@@ -1,5 +1,7 @@
 
-<img src="https://cloud.githubusercontent.com/assets/928095/21403346/c7b6ea90-c792-11e6-9c3b-a7553268efd0.png" width="460">
+<p align="center">
+<img src="https://cloud.githubusercontent.com/assets/928095/21403346/c7b6ea90-c792-11e6-9c3b-a7553268efd0.png" width="320">
+</p>
 
 # HTTPLite
 A simple Swift 3.x wrapper for **URLSession**
