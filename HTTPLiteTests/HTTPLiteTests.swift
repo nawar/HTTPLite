@@ -73,7 +73,7 @@ class HTTPLiteTests: XCTestCase {
         
         let params: [String: String] = ["album":"Michael Jackson - Thriller"]
         
-        request.GET(parameters: params, success: { response in
+        request.get(parameters: params, success: { response in
             
             if let data = response.data {
                 
@@ -116,14 +116,14 @@ class HTTPLiteTests: XCTestCase {
         
         let expectation = self.expectation(description: "HTTPLite-Request")
         
-        guard let request = Request(Url: "http://httpbin.org/image/jpeg") else {
+        guard let request = Request(Url: "https://upload.wikimedia.org/wikipedia/commons/9/92/Big_Sur_Coast_California.JPG") else {
             XCTFail("Can't intialize the request")
             return
         }
         
         let params: [String: String] = ["image":"Random image"]
         
-        request.GET(parameters: params, success: { response in
+        request.get(parameters: params, success: { response in
             
             if let data = response.data {
                 print("Data received : \(data)")
@@ -145,8 +145,7 @@ class HTTPLiteTests: XCTestCase {
         }) { progress in
             
             if progress > 0 {
-                print("progress: \(progress)")
-                expectation.fulfill()
+                print("downloaded \(progress)%")
             }
             
         }
@@ -156,6 +155,51 @@ class HTTPLiteTests: XCTestCase {
         }
     }
     
+    func testDownloadingFile() {
+        
+        let expectation = self.expectation(description: "HTTPLite-Request")
+        
+        guard let request = Request(Url: "https://upload.wikimedia.org/wikipedia/commons/9/92/Big_Sur_Coast_California.JPG") else {
+            XCTFail("Can't intialize the request")
+            return
+        }
+        
+        let params: [String: String] = ["image":"Random image"]
+        
+        request.download(parameters: params, success: { response in
+            
+            XCTAssertNil(response.data)
+            XCTAssertNotNil(response.url)
+            
+            if let data = response.data {
+                print("Data received : \(data)")
+            }
+            
+            if let url = response.url {
+                print("File download finished: \(url)")
+                let image = UIImage(contentsOfFile: url.path)
+                XCTAssertNotNil(image)
+            }
+            
+            expectation.fulfill()
+            
+        }, failure: { error in
+            
+            print("error happend in failure closure")
+            XCTFail("error: \(error.localizedDescription )")
+            
+        }) { progress in
+            
+            if progress > 0 {
+                print("downloaded \(progress)%")
+            }
+            
+        }
+        
+        waitForExpectations(timeout: waitTimeout) { error in
+            print("timedout after \(self.waitTimeout) with error:\(error?.localizedDescription)")
+        }
+    }
     
     func testPOSTRequestWithJSON() {
         
@@ -168,7 +212,7 @@ class HTTPLiteTests: XCTestCase {
         
         let params: [String: String] = ["healer":"Grigori Yefimovich Rasputin", "powers": "healer and adviser"]
         
-        request.POST(parameters: params, success: { response in
+        request.post(parameters: params, success: { response in
             
             if let data = response.data {
                 
@@ -207,7 +251,7 @@ class HTTPLiteTests: XCTestCase {
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {
-            // Put the code you want to measure the time of here.
+
         }
     }
     

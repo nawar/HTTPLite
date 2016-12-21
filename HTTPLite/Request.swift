@@ -48,29 +48,28 @@ class Request {
         - GET: get requests
      */
     enum `Type`: String {
-        case POST = "POST"
-        case GET = "GET"
+        case post = "POST"
+        case get = "GET"
     }
     
     
     // MARK: - Methods Functions
     
     /**
-        ## POST
         Sends POST request
         - parameters:
-            - parameters: the paraemters in the POST request body
+            - parameters: the parameters in the POST request body
             - success: success handler
             - failure: failure handler
             - progress: progress handler
     */
-    func POST(parameters : [String:String],
+    func post(parameters : [String:String],
             success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
         
         // setup the right method
-        method(type: .POST, parameters: parameters)
+        method(type: .post, parameters: parameters)
         // pull the shared session
         let session = Session.sharedInstance
         task = session.current.dataTask(with: request)
@@ -88,21 +87,20 @@ class Request {
     }
     
     /**
-     ## GET
      Sends GET request
      - parameters:
-     - parameters: the paraemters in the GET request body
+     - parameters: the parameters in the GET request body
      - success: success handler
      - failure: failure handler
      - progress: progress handler
      */
-    func GET(parameters : [String:String], isJSON : Bool = true,
+    func get(parameters : [String:String],
               success: @escaping successClosure,
               failure: @escaping failureClosure,
               progress: @escaping progressClosure) {
         
         // setup the right method
-        method(type: .GET, parameters: parameters)
+        method(type: .get, parameters: parameters)
         // pull the shared session
         let session = Session.sharedInstance
         task = session.current.dataTask(with: request)
@@ -118,6 +116,36 @@ class Request {
         // start the task
         start()
     }
+    
+    /**
+     ## download
+     Download a single file using downloadTask
+     - parameters:
+     - parameters: the parmeters in the GET request body
+     - success: success handler
+     - failure: failure handler
+     - progress: progress handler
+     */
+    func download(parameters : [String:String],
+             success: @escaping successClosure,
+             failure: @escaping failureClosure,
+             progress: @escaping progressClosure) {
+        
+        // setup the right method
+        method(type: .get, parameters: parameters)
+        // pull the shared session
+        let session = Session.sharedInstance
+        task = session.current.downloadTask(with: request)
+        // initiate the request handlers
+        let handlers = (success: success, failure: failure, progress: progress)
+        
+        let taskId = task.taskIdentifier
+        // add the task to the hash table
+        session.taskHash[taskId] = handlers
+        // start the task
+        start()
+    }
+    
     
     // MARK: - Helper Functions
     
@@ -135,7 +163,7 @@ class Request {
         
         // fill up the headers
         switch type {
-        case .POST:
+        case .post:
             // Setup HTTP Body
             if let params = parameters {
                 
@@ -145,7 +173,7 @@ class Request {
                 }
             
             }
-        case .GET:
+        case .get:
             
             // If there are parameters, build the query part of the URL then 
             // assign it back

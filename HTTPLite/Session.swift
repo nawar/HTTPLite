@@ -64,9 +64,12 @@ fileprivate class SessionDelegate: NSObject, URLSessionDataDelegate, URLSessionD
             
             if let httpResponse = task.response as? HTTPURLResponse {
                 
-                let dataForTask = session.taskDataStorage[taskId]! as Data
-                let response = Response(response: httpResponse, data: dataForTask)
-                handlers?.success(response)
+                // in case we downloaded a file using download() function, we'll ignore this
+                // as we already removed the taskId from the hashtable
+                if let dataForTask = session.taskDataStorage[taskId] {
+                    let response = Response(response: httpResponse, data: dataForTask as Data)
+                    handlers?.success(response)
+                }
             
             }
             
@@ -125,11 +128,10 @@ fileprivate class SessionDelegate: NSObject, URLSessionDataDelegate, URLSessionD
         
         // do the final clean up
         session.taskHash.removeValue(forKey: downloadTask.taskIdentifier)
-        session.taskDataStorage.removeValue(forKey: downloadTask.taskIdentifier)
         
     }
     
-    /// Task Progress
+    /// Download Task Progress
     func urlSession(_ session: URLSession,
                     downloadTask: URLSessionDownloadTask,
                     didWriteData bytesWritten: Int64,
@@ -137,7 +139,6 @@ fileprivate class SessionDelegate: NSObject, URLSessionDataDelegate, URLSessionD
                     totalBytesExpectedToWrite expected: Int64) {
         
         let progress = 100 * written / expected
-        print("downloaded \(progress)%")
         
         let sharedSession = Session.sharedInstance
         let handlers = sharedSession.taskHash[downloadTask.taskIdentifier]
