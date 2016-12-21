@@ -27,7 +27,7 @@
 /* Begin PBXFileReference section */
 		441B57D81DF4A24900EBAC7B /* HTTPLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HTTPLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		441B57DB1DF4A24900EBAC7B /* HTTPLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HTTPLite.h; sourceTree = "<group>"; };
-		441B57DC1DF4A24900EBAC7B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = HTTPLite/Info.plist; sourceTree = "<group>"; };
+		441B57DC1DF4A24900EBAC7B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		441B57E11DF4A24A00EBAC7B /* HTTPLiteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HTTPLiteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		441B57E61DF4A24A00EBAC7B /* HTTPLiteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPLiteTests.swift; sourceTree = "<group>"; };
 		441B57E81DF4A24A00EBAC7B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -60,7 +60,6 @@
 				441B57DA1DF4A24900EBAC7B /* Classes */,
 				441B57E51DF4A24A00EBAC7B /* HTTPLiteTests */,
 				441B57D91DF4A24900EBAC7B /* Products */,
-				441B57DC1DF4A24900EBAC7B /* Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +78,7 @@
 				441B57DB1DF4A24900EBAC7B /* HTTPLite.h */,
 				441B57F01DF4A91D00EBAC7B /* Session.swift */,
 				441B57F41DF4CBFE00EBAC7B /* Request.swift */,
+				441B57DC1DF4A24900EBAC7B /* Info.plist */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -323,7 +323,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = HTTPLite/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Classes/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -383,7 +383,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = HTTPLite/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Classes/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
