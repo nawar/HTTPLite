@@ -8,6 +8,8 @@ A simple Swift 3.x wrapper for **URLSession**
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) ![ios/osx](https://cocoapod-badges.herokuapp.com/p/AFNetworking/badge.png)
 
 -----
+* [Installation](#installation)
+   * [CocoaPods](#cocoapods)
 * [Usage](#usage)
    * [GET](#get)
       * [JSON handling](#json-handling)
@@ -16,15 +18,34 @@ A simple Swift 3.x wrapper for **URLSession**
       * [Download with get()](#download-with-get)
       * [Download with download()](#download-with-download)
          * [Download Progress](#download-progress)
-* [Installation](#installation)
-   * [CocoaPods](#cocoapods)
 * [Support](#support)
+
+## Installation 
+
+### CocoaPods
+
+To install, check out Get Started tab on cocoapods.org.
+To use HTTPLite in your project add the pod below to your project's `Podfile` 
+
+```
+pod 'HTTPLite'
+```
+
+Then, from the command line, run:
+
+```bash
+$ pod install # or pod update
+```
+Then you are good to start using it :+1:
 
 
 
 ## Usage 
-
-To use the wrapper, a simple declaration of a `Request` object suffices, with the recipient URL.
+To use the library, import it in your file.
+```swift
+import HTTPLite
+```
+Follow that with a simple declaration of a `Request` object with the recipient URL.
 
 ```swift
 guard let request = Request(Url: "https://www.google.com") else {
@@ -166,25 +187,6 @@ request.download(parameters: params, success: { response in
 
 })
 ```
-
-## Installation 
-
-### CocoaPods
-
-To install, check out Get Started tab on cocoapods.org.
-To use HTTPLite in your project add the pod below to your project's `Podfile` 
-
-```
-pod 'HTTPLite'
-```
-
-Then, from the command line, run:
-
-```
-pod install # or pod update
-```
-Then you are good to go :+1:
-
 
 ## Support
 If you encounter a problem, please open a new issue. Also, pull requests are always welcome! 
